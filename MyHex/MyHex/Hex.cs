@@ -20,6 +20,8 @@ namespace MyHex
     }
     class BoardHex:Hex
     {
+        public string teststr;
+
         private bool filled;
         public bool Filled
         {
@@ -28,14 +30,24 @@ namespace MyHex
                 return filled;
             }
         }
+
+        public BoardHex[] neighbor;
         public BoardHex()
         {
+            teststr = "O";
             neighbor = new BoardHex[6];
             for(int i = 0;i<6;i++)
             {
                 neighbor[i] = null;
             }
             filled = false;
+        }
+
+        public void PrintSelf()
+        {
+            Console.Write(teststr+" ");
+            if (neighbor[0] != null) neighbor[0].PrintSelf();
+            else Console.WriteLine();
         }
     }
 }

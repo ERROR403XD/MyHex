@@ -10,6 +10,10 @@ namespace MyHex
     {
         static void Main(string[] args)
         {
+            Board board = new Board();
+
+            Console.WriteLine(-7 % 6);
+            Console.ReadKey();
         }
     }
 }
