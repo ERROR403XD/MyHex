@@ -10,7 +10,8 @@ namespace MyHex
     {
         private List<BoardHex> hexList;
         private List<BoardHex>[] checkList;
-        public Board()
+        private int length;
+        public Board(int l)
         {
             hexList = new List<BoardHex>();
             checkList = new List<BoardHex>[3];
@@ -18,7 +19,7 @@ namespace MyHex
             checkList[1] = new List<BoardHex>();
             checkList[2] = new List<BoardHex>();
 
-            int length = 5;
+            length = l;
             BoardHex head = GenerateRow(length);
 
             foreach(BoardHex temp in hexList)
@@ -32,7 +33,6 @@ namespace MyHex
                 checkList[1].Add(head);
                 BoardHex next = GenerateRow(length + i+1);
                 FetchLeft(head, next);
-                head.PrintSelf();
                 head = next;
             }
             checkList[1].Add(head);
@@ -41,29 +41,9 @@ namespace MyHex
                 checkList[2].Add(head);
                 BoardHex next = GenerateRow(2 * length - 1 - i - 1);
                 FetchRight(head, next);
-                head.PrintSelf();
                 head = next;
             }
             checkList[2].Add(head);
-            head.PrintSelf();
-
-
-            Random rd = new Random();
-            BoardHex target = hexList[rd.Next(hexList.Count)];
-            target.teststr = "I";
-            for(int i =0;i<target.neighbor.Length;i++)
-            {
-                if(target.neighbor[i]!=null)
-                {
-                    target.neighbor[i].teststr = "X";
-                }
-            }
-
-            Console.WriteLine();
-            PrintSelf();
-
-            
-
         }
         private BoardHex GenerateRow(int count)
         {
@@ -108,7 +88,7 @@ namespace MyHex
             }
         }
 
-        private void PrintSelf()
+        public void PrintSelf()
         {
             for (int i = 0; i < checkList[1].Count; i++)
             {
@@ -121,5 +101,162 @@ namespace MyHex
                 checkList[2][i].PrintSelf();
             }
         }
+        public void RandomChange()
+        {
+            Random rd = new Random();
+            BoardHex target = hexList[rd.Next(hexList.Count)];
+            target.teststr = "I";
+            for (int i = 0; i < target.neighbor.Length; i++)
+            {
+                if (target.neighbor[i] != null)
+                {
+                    target.neighbor[i].teststr = "X";
+                }
+            }
+            PrintSelf();
+            target.teststr = "O";
+            for (int i = 0; i < target.neighbor.Length; i++)
+            {
+                if (target.neighbor[i] != null)
+                {
+                    target.neighbor[i].teststr = "O";
+                }
+            }
+        }
+        public bool JudgeAddable(BoardHex pos,Block target)
+        {
+            if(!hexList.Contains(pos))
+            {
+                throw new IndexOutOfRangeException();
+            }
+            List<BoardHex> judgeList = new List<BoardHex>() {pos };
+            List<int[]> blockList = target.Hexes;
+            int i = 0;
+            while(judgeList.Count!=0)
+            {
+                if(judgeList[0].Filled)
+                {
+                    return false;
+                }
+                
+                if(i<blockList.Count)
+                {
+                    for(int j=0;j<blockList[i].Length;j++)
+                    {
+                        if(judgeList[0].neighbor[blockList[i][j]]==null)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            judgeList.Add(judgeList[0].neighbor[blockList[i][j]]);
+                        }
+                    }
+                    i++;
+                }
+                judgeList.RemoveAt(0);
+
+            }
+            return true;
+
+
+        }
+
+        public void AddBlock(BoardHex pos,Block target)
+        {
+            if (!JudgeAddable(pos, target)) return;
+            List<BoardHex> judgeList = new List<BoardHex>() { pos };
+            List<int[]> blockList = target.Hexes;
+            int i = 0;
+            while (judgeList.Count != 0)
+            {
+                judgeList[0].Fill();
+                if (i < blockList.Count)
+                {
+                    for (int j = 0; j < blockList[i].Length; j++)
+                    {
+                        judgeList.Add(judgeList[0].neighbor[blockList[i][j]]);
+                    }
+                    i++;
+                }
+                judgeList.RemoveAt(0);
+            }
+
+            List<BoardHex> toUnfil = new List<BoardHex>();
+            foreach(BoardHex hex in checkList[0])
+            {
+                Check(hex, 2, toUnfil);
+                Check(hex, 1, toUnfil);
+            }
+            foreach (BoardHex hex in checkList[1])
+            {
+                Check(hex, 1, toUnfil);
+                Check(hex, 0, toUnfil);
+            }
+            foreach (BoardHex hex in checkList[2])
+            {
+                Check(hex, 5, toUnfil);
+                Check(hex, 0, toUnfil);
+            }
+            foreach(BoardHex hex in toUnfil)
+            {
+                hex.Unfill();
+            }
+        }
+
+        private int Check(BoardHex start, int dir, List<BoardHex> list)
+        {
+            if(dir<0||dir>5)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            int score = 0;
+            List<BoardHex> tempList = new List<BoardHex>();
+            while(start!=null&&start.Filled)
+            {
+                tempList.Add(start);
+                start = start.neighbor[dir];
+            }
+            if(start!=null)
+            {
+                return 0;
+            }
+            foreach(BoardHex hex in tempList)
+            {
+                list.Add(hex);
+            }
+            return score;
+        }
+        public void RandomAdd(Block b)
+        {
+            Random rd = new Random();
+            BoardHex pos = hexList[rd.Next(hexList.Count)];
+
+            if(JudgeAddable(pos,b))
+            {
+                pos.teststr = "Y";
+                AddBlock(pos, b);
+            }
+            else
+            {
+                pos.teststr = "N";
+            }
+            PrintSelf();
+        }
+        public void TestAdd(Block b)
+        {
+            foreach(BoardHex hex in hexList)
+            {
+                if(JudgeAddable(hex,b))
+                {
+                    AddBlock(hex, b);
+                    PrintSelf();
+                    return;
+                }
+                
+            }
+            Console.WriteLine("game over");
+        }
+
     }
 }

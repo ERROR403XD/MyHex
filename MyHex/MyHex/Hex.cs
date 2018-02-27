@@ -42,10 +42,31 @@ namespace MyHex
             }
             filled = false;
         }
+        public void Fill()
+        {
+            if(filled)
+            {
+                throw new System.ArgumentException("already filled");
+                return;
+            }
+            filled = true;
+        }
+        public void Unfill()
+        {
+            filled = false;
+        }
 
         public void PrintSelf()
         {
-            Console.Write(teststr+" ");
+            if(filled)
+            {
+                Console.Write("P" + " ");
+            }
+            else
+            {
+                Console.Write(teststr + " ");
+            }
+            
             if (neighbor[0] != null) neighbor[0].PrintSelf();
             else Console.WriteLine();
         }
