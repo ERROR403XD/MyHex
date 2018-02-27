@@ -11,6 +11,25 @@ namespace MyHex
         private List<BoardHex> hexList;
         private List<BoardHex>[] checkList;
         private int length;
+        public int Length
+        {
+            get
+            {
+                return length;
+            }
+        }
+        public bool[] State
+        {
+            get
+            {
+                bool[] res = new bool[hexList.Count];
+                for(int i = 0;i<hexList.Count;i++)
+                {
+                    res[i] = hexList[i].Filled;
+                }
+                return res;
+            }
+        }
         public Board(int l)
         {
             hexList = new List<BoardHex>();
@@ -44,6 +63,50 @@ namespace MyHex
                 head = next;
             }
             checkList[2].Add(head);
+        }
+        public Board(Board target)
+        {
+            hexList = new List<BoardHex>();
+            checkList = new List<BoardHex>[3];
+            checkList[0] = new List<BoardHex>();
+            checkList[1] = new List<BoardHex>();
+            checkList[2] = new List<BoardHex>();
+
+            length = target.length;
+            BoardHex head = GenerateRow(length);
+
+            foreach (BoardHex temp in hexList)
+            {
+                checkList[0].Add(temp);
+                // temp.teststr = "X";
+            }
+
+            for (int i = 0; i < length - 1; i++)
+            {
+                checkList[1].Add(head);
+                BoardHex next = GenerateRow(length + i + 1);
+                FetchLeft(head, next);
+                head = next;
+            }
+            checkList[1].Add(head);
+            for (int i = 0; i < length - 1; i++)
+            {
+                checkList[2].Add(head);
+                BoardHex next = GenerateRow(2 * length - 1 - i - 1);
+                FetchRight(head, next);
+                head = next;
+            }
+            checkList[2].Add(head);
+
+            bool[] state = target.State;
+            for(int i = 0;i<state.Length;i++)
+            {
+                if(state[i])
+                {
+                    hexList[i].Fill();
+                }
+            }
+
         }
         private BoardHex GenerateRow(int count)
         {
