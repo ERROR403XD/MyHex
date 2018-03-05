@@ -151,41 +151,7 @@ namespace MyHex
             }
         }
 
-        public void PrintSelf()
-        {
-            for (int i = 0; i < checkList[1].Count; i++)
-            {
-                Console.Write(new string(' ', checkList[1].Count - i));
-                checkList[1][i].PrintSelf();
-            }
-            for(int i = 1;i<checkList[2].Count;i++)
-            {
-                Console.Write(new string(' ', i+1));
-                checkList[2][i].PrintSelf();
-            }
-        }
-        public void RandomChange()
-        {
-            Random rd = new Random();
-            BoardHex target = hexList[rd.Next(hexList.Count)];
-            target.teststr = "I";
-            for (int i = 0; i < target.neighbor.Length; i++)
-            {
-                if (target.neighbor[i] != null)
-                {
-                    target.neighbor[i].teststr = "X";
-                }
-            }
-            PrintSelf();
-            target.teststr = "O";
-            for (int i = 0; i < target.neighbor.Length; i++)
-            {
-                if (target.neighbor[i] != null)
-                {
-                    target.neighbor[i].teststr = "O";
-                }
-            }
-        }
+
         public bool JudgeAddable(BoardHex pos,Block target)
         {
             if(!hexList.Contains(pos))
@@ -290,6 +256,10 @@ namespace MyHex
             }
             return score;
         }
+
+
+
+        //test func
         public void RandomAdd(Block b)
         {
             Random rd = new Random();
@@ -319,6 +289,41 @@ namespace MyHex
                 
             }
             Console.WriteLine("game over");
+        }
+        public void PrintSelf()
+        {
+            for (int i = 0; i < checkList[1].Count; i++)
+            {
+                Console.Write(new string(' ', checkList[1].Count - i));
+                checkList[1][i].PrintSelf();
+            }
+            for (int i = 1; i < checkList[2].Count; i++)
+            {
+                Console.Write(new string(' ', i + 1));
+                checkList[2][i].PrintSelf();
+            }
+        }
+        public void RandomChange()
+        {
+            Random rd = new Random();
+            BoardHex target = hexList[rd.Next(hexList.Count)];
+            target.teststr = "I";
+            for (int i = 0; i < target.neighbor.Length; i++)
+            {
+                if (target.neighbor[i] != null)
+                {
+                    target.neighbor[i].teststr = "X";
+                }
+            }
+            PrintSelf();
+            target.teststr = "O";
+            for (int i = 0; i < target.neighbor.Length; i++)
+            {
+                if (target.neighbor[i] != null)
+                {
+                    target.neighbor[i].teststr = "O";
+                }
+            }
         }
 
     }
