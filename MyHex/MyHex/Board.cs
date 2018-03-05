@@ -18,6 +18,13 @@ namespace MyHex
                 return length;
             }
         }
+        public int Count
+        {
+            get
+            {
+                return hexList.Count;
+            }
+        }
         public bool[] State
         {
             get
@@ -108,6 +115,8 @@ namespace MyHex
             }
 
         }
+
+        //generate board
         private BoardHex GenerateRow(int count)
         {
             BoardHex head = new BoardHex();
@@ -151,7 +160,7 @@ namespace MyHex
             }
         }
 
-
+        //basic func
         public bool JudgeAddable(BoardHex pos,Block target)
         {
             if(!hexList.Contains(pos))
@@ -190,10 +199,9 @@ namespace MyHex
 
 
         }
-
-        public void AddBlock(BoardHex pos,Block target)
+        public bool AddBlock(BoardHex pos,Block target)
         {
-            if (!JudgeAddable(pos, target)) return;
+            if (!JudgeAddable(pos, target)) return false;
             List<BoardHex> judgeList = new List<BoardHex>() { pos };
             List<int[]> blockList = target.Hexes;
             int i = 0;
@@ -231,8 +239,12 @@ namespace MyHex
             {
                 hex.Unfill();
             }
+            return true;
         }
-
+        public bool AddBlock(int index,Block target)
+        {
+            return AddBlock(hexList[index], target);
+        }
         private int Check(BoardHex start, int dir, List<BoardHex> list)
         {
             if(dir<0||dir>5)
@@ -257,7 +269,59 @@ namespace MyHex
             return score;
         }
 
+        //AI support
+        public int GetScore()
+        {
+            int score = 0;
 
+            //
+            score = Analysis();
+            //
+            return score;
+        }
+
+        private int Analysis()
+        {
+            int score = 0;
+            score += GetSpaceScore();
+            score += GetPScore();
+            return score;
+        }
+        private int GetSpaceScore()
+        {
+            int score = 0;
+            foreach(BoardHex i in hexList)
+            {
+                if (!i.Filled) score += 10;
+            }
+            return score;
+        }
+        private int GetPScore()
+        {
+            int score = 0;
+            for(int t = 0;t<Block.Types;t++)
+            {
+                for(int r= 0;r<5;r++)
+                {
+                    Block testBlock = new Block(t, r);
+                    score = IfAvilable(testBlock) * 20;
+                }
+            }
+            return score;
+        }
+
+        private int IfAvilable(Block b)
+        {
+            int res = 0;
+            foreach(BoardHex i in hexList)
+            {
+                if(JudgeAddable(i,b))
+                {
+                    res++;
+                }
+            }
+            return res;
+        }
 
         //test func
         public void RandomAdd(Block b)
