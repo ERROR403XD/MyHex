@@ -26,6 +26,9 @@ namespace MyHex
                 board.AddBlock(index, b2);
 
                 Console.Clear();
+
+                b2.PrintSelf();
+                Console.WriteLine(index);
                 board.PrintSelf();
                 Thread.Sleep(500);
             }
