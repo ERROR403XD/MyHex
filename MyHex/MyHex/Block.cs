@@ -107,6 +107,7 @@ namespace MyHex
                 }
                 Console.Write(";");
             }
+            Console.Write("("+type.ToString()+","+rotate.ToString()+")");
             Console.WriteLine();
         }
         public static void PrintBlockList()

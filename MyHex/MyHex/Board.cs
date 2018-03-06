@@ -304,7 +304,8 @@ namespace MyHex
                 for(int r= 0;r<5;r++)
                 {
                     Block testBlock = new Block(t, r);
-                    score = IfAvilable(testBlock) * 20;
+                    //score += IfAvilable(testBlock) * 2;
+                    if (IfAvilable(testBlock) != 0) score += 20;
                 }
             }
             return score;
@@ -386,6 +387,20 @@ namespace MyHex
                 if (target.neighbor[i] != null)
                 {
                     target.neighbor[i].teststr = "O";
+                }
+            }
+        }
+        public void TestAvi(Block b)
+        {
+            foreach(BoardHex i in hexList)
+            {
+                if(JudgeAddable(i,b))
+                {
+                    i.teststr = "Y";
+                }
+                else
+                {
+                    i.teststr = "N";
                 }
             }
         }

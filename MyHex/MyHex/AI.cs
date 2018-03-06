@@ -23,14 +23,21 @@ namespace MyHex
                     can.Add(i);
                     highScore = sc;
                 }
-                if(sc == highScore)
+                else if(sc == highScore)
                 {
                     can.Add(i);
                 }
             }
             if (highScore == 0) return -1;
+            Console.WriteLine("highsc = " + highScore.ToString());
+            foreach(int q in can)
+            {
+                Console.Write(q);
+                Console.Write("  ");
+            }
+            Console.WriteLine();
             Random rd = new Random();
-            return can[rd.Next(0, can.Count)];
+            return can[rd.Next(can.Count)];
         }
     }
 }

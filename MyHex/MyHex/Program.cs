@@ -22,15 +22,20 @@ namespace MyHex
             {
                 Block b2 = new Block(rd.Next(Block.Types), rd.Next(6));
                 int index = AI.GetNextMove(board, b2);
+                /*
+                
+                 board.TestAvi(b2);
+                 */
                 if (index == -1) break;
                 board.AddBlock(index, b2);
 
-                Console.Clear();
+                
 
                 b2.PrintSelf();
                 Console.WriteLine(index);
                 board.PrintSelf();
                 Thread.Sleep(500);
+                Console.Clear();
             }
             /*
             while(true)
