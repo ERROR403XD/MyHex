@@ -17,17 +17,18 @@ namespace MyHex
             Console.WriteLine(Block.Types);
             Block b1 = new Block(rd.Next(Block.Types), rd.Next(6));
             b1.PrintSelf();
-            board.RandomAdd(b1);
-            for (int i = 0; i < 5;i++)
+            //board.RandomAdd(b1);
+            while (true) 
             {
                 Block b2 = new Block(rd.Next(Block.Types), rd.Next(6));
-                board.TestAdd(b2);
-                Thread.Sleep(500);
+                int index = AI.GetNextMove(board, b2);
+                if (index == -1) break;
+                board.AddBlock(index, b2);
+
                 Console.Clear();
+                board.PrintSelf();
+                Thread.Sleep(500);
             }
-            board.PrintSelf();
-            Board board2 = new Board(board);
-            board2.PrintSelf();
             /*
             while(true)
             {
