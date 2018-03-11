@@ -38,7 +38,7 @@ namespace MyHex
         {
             get
             {
-                int count = 0;
+                int count = 1;
                 foreach(int[] temp in hexes)
                 {
                     count += temp.Length;
@@ -72,7 +72,12 @@ namespace MyHex
 
             type = t;
             rotate = r;
-            hexes = new List<int[]>(blockList[type]);
+            hexes = new List<int[]>();
+            foreach(int[] temp in blockList[type])
+            {
+                hexes.Add((int[])temp.Clone());
+            }
+            
             foreach(int[] temp in hexes)
             {
                 for(int i = 0;i<temp.Length;i++)

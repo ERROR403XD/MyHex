@@ -36,7 +36,7 @@ namespace MyHex
                 Console.Write("  ");
             }
             Console.WriteLine();
-            Random rd = new Random();
+            Random rd = new Random(1);
             return can[rd.Next(can.Count)];
         }
     }

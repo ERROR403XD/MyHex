@@ -60,7 +60,7 @@ namespace MyHex
         {
             if(filled)
             {
-                Console.Write("P" + " ");
+                Console.Write("X" + " ");
             }
             else
             {

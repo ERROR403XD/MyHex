@@ -12,15 +12,20 @@ namespace MyHex
         static void Main(string[] args)
         {
             Board board = new Board(5);
-            Random rd = new Random();
+            Random rd = new Random(1);
+            /*
             Block.PrintBlockList();
             Console.WriteLine(Block.Types);
             Block b1 = new Block(rd.Next(Block.Types), rd.Next(6));
             b1.PrintSelf();
+            */
+            int[] step = new int[] { };
             //board.RandomAdd(b1);
             while (true) 
             {
                 Block b2 = new Block(rd.Next(Block.Types), rd.Next(6));
+                Block.PrintBlockList();
+                b2.PrintSelf();
                 int index = AI.GetNextMove(board, b2);
                 /*
                 
@@ -28,14 +33,9 @@ namespace MyHex
                  */
                 if (index == -1) break;
                 board.AddBlock(index, b2);
-
-                
-
-                b2.PrintSelf();
                 Console.WriteLine(index);
                 board.PrintSelf();
                 Thread.Sleep(500);
-                Console.Clear();
             }
             /*
             while(true)

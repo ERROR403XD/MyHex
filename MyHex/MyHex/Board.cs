@@ -278,7 +278,7 @@ namespace MyHex
             score = Analysis();
             //
             return score;
-        }
+         }
 
         private int Analysis()
         {
