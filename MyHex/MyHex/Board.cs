@@ -117,7 +117,7 @@ namespace MyHex
         }
 
         //generate board
-        private BoardHex GenerateRow(int count)
+        protected BoardHex GenerateRow(int count)
         {
             BoardHex head = new BoardHex();
             hexList.Add(head);
@@ -133,7 +133,7 @@ namespace MyHex
             }
             return head;
         }
-        private void FetchLeft(BoardHex above,BoardHex below)
+        protected void FetchLeft(BoardHex above,BoardHex below)
         {
             while(above!=null&&below!=null)
             {
@@ -146,7 +146,7 @@ namespace MyHex
                 below = below.neighbor[0];
             }
         }
-        private void FetchRight(BoardHex above,BoardHex below)
+        protected void FetchRight(BoardHex above,BoardHex below)
         {
             while (above != null && below != null)
             {
@@ -245,7 +245,7 @@ namespace MyHex
         {
             return AddBlock(hexList[index], target);
         }
-        private int Check(BoardHex start, int dir, List<BoardHex> list)
+        protected int Check(BoardHex start, int dir, List<BoardHex> list)
         {
             if(dir<0||dir>5)
             {
@@ -311,7 +311,7 @@ namespace MyHex
             return score;
         }
 
-        private int IfAvilable(Block b)
+        protected int IfAvilable(Block b)
         {
             int res = 0;
             foreach(BoardHex i in hexList)

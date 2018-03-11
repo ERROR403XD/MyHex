@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI.cs" />
+    <Compile Include="AnalBoard.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Hex.cs" />

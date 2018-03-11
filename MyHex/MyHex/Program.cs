@@ -35,6 +35,11 @@ namespace MyHex
                 board.AddBlock(index, b2);
                 Console.WriteLine(index);
                 board.PrintSelf();
+
+                AnalBoard newboard = new AnalBoard(board);
+                newboard.PrintSelf();
+                
+                Console.WriteLine(newboard.GetScore());
                 Thread.Sleep(500);
             }
             /*
