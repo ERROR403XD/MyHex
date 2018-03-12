@@ -19,7 +19,9 @@ namespace MyHex
             Block b1 = new Block(rd.Next(Block.Types), rd.Next(6));
             b1.PrintSelf();
             */
+            
             int[] step = new int[] { };
+            int score = 0;
             //board.RandomAdd(b1);
             while (true) 
             {
@@ -32,15 +34,13 @@ namespace MyHex
                  board.TestAvi(b2);
                  */
                 if (index == -1) break;
-                board.AddBlock(index, b2);
+                score += board.AddBlock(index, b2);
                 Console.WriteLine(index);
                 board.PrintSelf();
-
-                AnalBoard newboard = new AnalBoard(board);
-                newboard.PrintSelf();
+                Console.WriteLine("score = " + score.ToString());
                 
-                Console.WriteLine(newboard.GetScore());
-                Thread.Sleep(500);
+                
+                //Thread.Sleep(500);
             }
             /*
             while(true)

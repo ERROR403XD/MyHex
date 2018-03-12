@@ -8,9 +8,9 @@ namespace MyHex
 {
     class Board
     {
-        private List<BoardHex> hexList;
-        private List<BoardHex>[] checkList;
-        private int length;
+        protected List<BoardHex> hexList;
+        protected List<BoardHex>[] checkList;
+        protected int length;
         public int Length
         {
             get
@@ -39,71 +39,12 @@ namespace MyHex
         }
         public Board(int l)
         {
-            hexList = new List<BoardHex>();
-            checkList = new List<BoardHex>[3];
-            checkList[0] = new List<BoardHex>();
-            checkList[1] = new List<BoardHex>();
-            checkList[2] = new List<BoardHex>();
-
-            length = l;
-            BoardHex head = GenerateRow(length);
-
-            foreach(BoardHex temp in hexList)
-            {
-                checkList[0].Add(temp);
-                // temp.teststr = "X";
-            }
-
-            for (int i = 0;i<length-1;i++)
-            {
-                checkList[1].Add(head);
-                BoardHex next = GenerateRow(length + i+1);
-                FetchLeft(head, next);
-                head = next;
-            }
-            checkList[1].Add(head);
-            for(int i = 0;i<length-1;i++)
-            {
-                checkList[2].Add(head);
-                BoardHex next = GenerateRow(2 * length - 1 - i - 1);
-                FetchRight(head, next);
-                head = next;
-            }
-            checkList[2].Add(head);
+            InitBoard(l);
         }
         public Board(Board target)
         {
-            hexList = new List<BoardHex>();
-            checkList = new List<BoardHex>[3];
-            checkList[0] = new List<BoardHex>();
-            checkList[1] = new List<BoardHex>();
-            checkList[2] = new List<BoardHex>();
-
-            length = target.length;
-            BoardHex head = GenerateRow(length);
-
-            foreach (BoardHex temp in hexList)
-            {
-                checkList[0].Add(temp);
-                // temp.teststr = "X";
-            }
-
-            for (int i = 0; i < length - 1; i++)
-            {
-                checkList[1].Add(head);
-                BoardHex next = GenerateRow(length + i + 1);
-                FetchLeft(head, next);
-                head = next;
-            }
-            checkList[1].Add(head);
-            for (int i = 0; i < length - 1; i++)
-            {
-                checkList[2].Add(head);
-                BoardHex next = GenerateRow(2 * length - 1 - i - 1);
-                FetchRight(head, next);
-                head = next;
-            }
-            checkList[2].Add(head);
+            InitBoard(target.Length);
+            
 
             bool[] state = target.State;
             for(int i = 0;i<state.Length;i++)
@@ -115,9 +56,49 @@ namespace MyHex
             }
 
         }
+        private void InitBoard(int l)
+        {
+            length = l;
+            hexList = new List<BoardHex>();
+            checkList = new List<BoardHex>[3];
+            checkList[0] = new List<BoardHex>();
+            checkList[1] = new List<BoardHex>();
+            checkList[2] = new List<BoardHex>();
+            
+            BoardHex head = GenerateRow(length);
 
+            foreach (BoardHex temp in hexList)
+            {
+                checkList[0].Add(temp);
+                // temp.teststr = "X";
+            }
+            checkList[1].Add(head);
+            for (int i = 0; i < length - 1; i++)
+            {
+                BoardHex next = GenerateRow(length + i + 1);
+                FetchLeft(head, next);
+                head = next;
+                checkList[0].Add(head);
+                checkList[1].Add(head);
+            }
+            checkList[2].Add(head);
+            for (int i = 0; i < length - 1; i++)
+            {
+                BoardHex next = GenerateRow(2 * length - 1 - i - 1);
+                FetchRight(head, next);
+                head = next;
+                checkList[2].Add(head);
+                checkList[1].Add(head);
+            }
+            head = head.neighbor[0];
+            while(head!=null)
+            {
+                checkList[2].Add(head);
+                head = head.neighbor[0];
+            }
+        }
         //generate board
-        protected BoardHex GenerateRow(int count)
+        private BoardHex GenerateRow(int count)
         {
             BoardHex head = new BoardHex();
             hexList.Add(head);
@@ -133,7 +114,7 @@ namespace MyHex
             }
             return head;
         }
-        protected void FetchLeft(BoardHex above,BoardHex below)
+        private void FetchLeft(BoardHex above,BoardHex below)
         {
             while(above!=null&&below!=null)
             {
@@ -146,7 +127,7 @@ namespace MyHex
                 below = below.neighbor[0];
             }
         }
-        protected void FetchRight(BoardHex above,BoardHex below)
+        private void FetchRight(BoardHex above,BoardHex below)
         {
             while (above != null && below != null)
             {
@@ -161,7 +142,7 @@ namespace MyHex
         }
 
         //basic func
-        public bool JudgeAddable(BoardHex pos,Block target)
+        protected bool JudgeAddable(BoardHex pos,Block target)
         {
             if(!hexList.Contains(pos))
             {
@@ -199,9 +180,12 @@ namespace MyHex
 
 
         }
-        public bool AddBlock(BoardHex pos,Block target)
+        public int AddBlock(BoardHex pos,Block target)
         {
-            if (!JudgeAddable(pos, target)) return false;
+            if (!JudgeAddable(pos, target)) return -1;
+
+            int score = 0;
+            score += target.Count * 10;
             List<BoardHex> judgeList = new List<BoardHex>() { pos };
             List<int[]> blockList = target.Hexes;
             int i = 0;
@@ -222,30 +206,29 @@ namespace MyHex
             List<BoardHex> toUnfil = new List<BoardHex>();
             foreach(BoardHex hex in checkList[0])
             {
-                Check(hex, 2, toUnfil);
                 Check(hex, 1, toUnfil);
             }
             foreach (BoardHex hex in checkList[1])
             {
-                Check(hex, 1, toUnfil);
                 Check(hex, 0, toUnfil);
             }
             foreach (BoardHex hex in checkList[2])
             {
                 Check(hex, 5, toUnfil);
-                Check(hex, 0, toUnfil);
             }
             foreach(BoardHex hex in toUnfil)
             {
                 hex.Unfill();
+                if (hex.Filled) score += 20;
+                else score += 40;
             }
-            return true;
+            return score;
         }
-        public bool AddBlock(int index,Block target)
-        {
+        public int AddBlock(int index,Block target)
+       {
             return AddBlock(hexList[index], target);
         }
-        protected int Check(BoardHex start, int dir, List<BoardHex> list)
+        private int Check(BoardHex start, int dir, List<BoardHex> list)
         {
             if(dir<0||dir>5)
             {
@@ -270,59 +253,7 @@ namespace MyHex
         }
 
         //AI support
-        public int GetScore()
-        {
-            int score = 0;
 
-            //
-            score = Analysis();
-            //
-            return score;
-         }
-
-        private int Analysis()
-        {
-            int score = 0;
-            score += GetSpaceScore();
-            score += GetPScore();
-            return score;
-        }
-        private int GetSpaceScore()
-        {
-            int score = 0;
-            foreach(BoardHex i in hexList)
-            {
-                if (!i.Filled) score += 10;
-            }
-            return score;
-        }
-        private int GetPScore()
-        {
-            int score = 0;
-            for(int t = 0;t<Block.Types;t++)
-            {
-                for(int r= 0;r<5;r++)
-                {
-                    Block testBlock = new Block(t, r);
-                    //score += IfAvilable(testBlock) * 2;
-                    if (IfAvilable(testBlock) != 0) score += 20;
-                }
-            }
-            return score;
-        }
-
-        protected int IfAvilable(Block b)
-        {
-            int res = 0;
-            foreach(BoardHex i in hexList)
-            {
-                if(JudgeAddable(i,b))
-                {
-                    res++;
-                }
-            }
-            return res;
-        }
 
         //test func
         public void RandomAdd(Block b)
@@ -359,13 +290,8 @@ namespace MyHex
         {
             for (int i = 0; i < checkList[1].Count; i++)
             {
-                Console.Write(new string(' ', checkList[1].Count - i));
+                Console.Write(new string(' ', Math.Abs(length-i-1)));
                 checkList[1][i].PrintSelf();
-            }
-            for (int i = 1; i < checkList[2].Count; i++)
-            {
-                Console.Write(new string(' ', i + 1));
-                checkList[2][i].PrintSelf();
             }
         }
         public void RandomChange()
@@ -403,6 +329,14 @@ namespace MyHex
                     i.teststr = "N";
                 }
             }
+        }
+        public void CheckListTest(int i)
+        {
+            foreach(BoardHex hex in checkList[i])
+            {
+                hex.teststr = "H";
+            }
+            PrintSelf();
         }
 
     }

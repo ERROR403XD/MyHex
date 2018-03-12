@@ -14,8 +14,8 @@ namespace MyHex
             List<int> can = new List<int>();
             for(int i = 0;i<board.Count;i++)
             {
-                Board tempBoard = new Board(board);
-                if (!tempBoard.AddBlock(i, block)) continue;
+                AnalBoard tempBoard = new AnalBoard(board);
+                if (tempBoard.AddBlock(i, block)==-1) continue;
                 int sc = tempBoard.GetScore();
                 if(sc>highScore)
                 {
