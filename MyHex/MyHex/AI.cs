@@ -10,7 +10,7 @@ namespace MyHex
     {
         public static int GetNextMove(Board board,Block block)
         {
-            int highScore = 0;
+            int highScore = int.MinValue;
             List<int> can = new List<int>();
             for(int i = 0;i<board.Count;i++)
             {
@@ -28,7 +28,7 @@ namespace MyHex
                     can.Add(i);
                 }
             }
-            if (highScore == 0) return -1;
+            if (highScore == int.MinValue) return -1;
             Console.WriteLine("highsc = " + highScore.ToString());
             foreach(int q in can)
             {

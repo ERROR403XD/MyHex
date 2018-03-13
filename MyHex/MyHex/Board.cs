@@ -218,9 +218,9 @@ namespace MyHex
             }
             foreach(BoardHex hex in toUnfil)
             {
-                hex.Unfill();
                 if (hex.Filled) score += 20;
                 else score += 40;
+                hex.Unfill();
             }
             return score;
         }

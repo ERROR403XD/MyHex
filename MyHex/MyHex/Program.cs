@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
+
+
 namespace MyHex
 {
     class Program
@@ -23,10 +25,15 @@ namespace MyHex
             int[] step = new int[] { };
             int score = 0;
             //board.RandomAdd(b1);
+
+            /*
+            Block b1 = new Block(4, 4);
+            board.TestAvi(b1);
+            board.PrintSelf();
+            */
             while (true) 
             {
                 Block b2 = new Block(rd.Next(Block.Types), rd.Next(6));
-                Block.PrintBlockList();
                 b2.PrintSelf();
                 int index = AI.GetNextMove(board, b2);
                 /*
@@ -38,10 +45,12 @@ namespace MyHex
                 Console.WriteLine(index);
                 board.PrintSelf();
                 Console.WriteLine("score = " + score.ToString());
-                
+                Console.WriteLine();
                 
                 //Thread.Sleep(500);
             }
+
+            Console.WriteLine("GAME OVER");
             /*
             while(true)
             {
